@@ -126,88 +126,88 @@ int main(int argc, char **argv)
     const int skip_msecs_cmd = 1006;
     const int output_file_cmd = 1007;
 
-    struct option longopts[] =
-    {
-        //No-argument options
-        {"challenge", no_argument, &challenge_flag, 1},
-        {"loop", no_argument, &loop_flag, 1},
-        {"verbose", no_argument, &verbose_flag, 1},
-        {"no-scale", no_argument, 0, no_scale_cmd},
-        {"with-rotation", no_argument, 0, with_rotation_cmd},
-        //Argument options
-        {"bbox", required_argument, 0, bbox_cmd},
-        {"detector", required_argument, 0, detector_cmd},
-        {"descriptor", required_argument, 0, descriptor_cmd},
-        {"output-file", required_argument, 0, output_file_cmd},
-        {"skip", required_argument, 0, skip_cmd},
-        {"skip-msecs", required_argument, 0, skip_msecs_cmd},
-        {0, 0, 0, 0}
-    };
+    // struct option longopts[] =
+    // {
+    //     //No-argument options
+    //     {"challenge", no_argument, &challenge_flag, 1},
+    //     {"loop", no_argument, &loop_flag, 1},
+    //     {"verbose", no_argument, &verbose_flag, 1},
+    //     {"no-scale", no_argument, 0, no_scale_cmd},
+    //     {"with-rotation", no_argument, 0, with_rotation_cmd},
+    //     //Argument options
+    //     {"bbox", required_argument, 0, bbox_cmd},
+    //     {"detector", required_argument, 0, detector_cmd},
+    //     {"descriptor", required_argument, 0, descriptor_cmd},
+    //     {"output-file", required_argument, 0, output_file_cmd},
+    //     {"skip", required_argument, 0, skip_cmd},
+    //     {"skip-msecs", required_argument, 0, skip_msecs_cmd},
+    //     {0, 0, 0, 0}
+    // };
 
     int index = 0;
     int c;
-    while((c = getopt_long(argc, argv, "v", longopts, &index)) != -1)
-    {
-        switch (c)
-        {
-            case 'v':
-                verbose_flag = true;
-                break;
-            case bbox_cmd:
-                {
-                    //TODO: The following also accepts strings of the form %f,%f,%f,%fxyz...
-                    string bbox_format = "%f,%f,%f,%f";
-                    float x,y,w,h;
-                    int ret = sscanf(optarg, bbox_format.c_str(), &x, &y, &w, &h);
-                    if (ret != 4)
-                    {
-                        cerr << "bounding box must be given in format " << bbox_format << endl;
-                        return 1;
-                    }
+    // while((c = getopt_long(argc, argv, "v", longopts, &index)) != -1)
+    // {
+    //     switch (c)
+    //     {
+    //         case 'v':
+    //             verbose_flag = true;
+    //             break;
+    //         case bbox_cmd:
+    //             {
+    //                 //TODO: The following also accepts strings of the form %f,%f,%f,%fxyz...
+    //                 string bbox_format = "%f,%f,%f,%f";
+    //                 float x,y,w,h;
+    //                 int ret = sscanf(optarg, bbox_format.c_str(), &x, &y, &w, &h);
+    //                 if (ret != 4)
+    //                 {
+    //                     cerr << "bounding box must be given in format " << bbox_format << endl;
+    //                     return 1;
+    //                 }
 
-                    bbox_flag = 1;
-                    rect = Rect(x,y,w,h);
-                }
-                break;
-            case detector_cmd:
-                cmt.str_detector = optarg;
-                break;
-            case descriptor_cmd:
-                cmt.str_descriptor = optarg;
-                break;
-            case output_file_cmd:
-                output_path = optarg;
-                output_flag = 1;
-                break;
-            case skip_cmd:
-                {
-                    int ret = sscanf(optarg, "%d", &skip_frames);
-                    if (ret != 1)
-                    {
-                      skip_frames = 0;
-                    }
-                }
-                break;
-            case skip_msecs_cmd:
-                {
-                    int ret = sscanf(optarg, "%d", &skip_msecs);
-                    if (ret != 1)
-                    {
-                      skip_msecs = 0;
-                    }
-                }
-                break;
-            case no_scale_cmd:
-                cmt.consensus.estimate_scale = false;
-                break;
-            case with_rotation_cmd:
-                cmt.consensus.estimate_rotation = true;
-                break;
-            case '?':
-                return 1;
-        }
+    //                 bbox_flag = 1;
+    //                 rect = Rect(x,y,w,h);
+    //             }
+    //             break;
+    //         case detector_cmd:
+    //             cmt.str_detector = optarg;
+    //             break;
+    //         case descriptor_cmd:
+    //             cmt.str_descriptor = optarg;
+    //             break;
+    //         case output_file_cmd:
+    //             output_path = optarg;
+    //             output_flag = 1;
+    //             break;
+    //         case skip_cmd:
+    //             {
+    //                 int ret = sscanf(optarg, "%d", &skip_frames);
+    //                 if (ret != 1)
+    //                 {
+    //                   skip_frames = 0;
+    //                 }
+    //             }
+    //             break;
+    //         case skip_msecs_cmd:
+    //             {
+    //                 int ret = sscanf(optarg, "%d", &skip_msecs);
+    //                 if (ret != 1)
+    //                 {
+    //                   skip_msecs = 0;
+    //                 }
+    //             }
+    //             break;
+    //         case no_scale_cmd:
+    //             cmt.consensus.estimate_scale = false;
+    //             break;
+    //         case with_rotation_cmd:
+    //             cmt.consensus.estimate_rotation = true;
+    //             break;
+    //         case '?':
+    //             return 1;
+    //     }
 
-    }
+    // }
 
     // Can only skip frames or milliseconds, not both.
     if (skip_frames > 0 && skip_msecs > 0)
@@ -233,90 +233,90 @@ int main(int argc, char **argv)
     Output2FILE::Stream() = stdout; //Log to stdout
 
     //Challenge mode
-    if (challenge_flag)
-    {
-        //Read list of images
-        ifstream im_file("images.txt");
-        vector<string> files;
-        string line;
-        while(getline(im_file, line ))
-        {
-            files.push_back(line);
-        }
+    // if (challenge_flag)
+    // {
+    //     //Read list of images
+    //     ifstream im_file("images.txt");
+    //     vector<string> files;
+    //     string line;
+    //     while(getline(im_file, line ))
+    //     {
+    //         files.push_back(line);
+    //     }
 
-        //Read region
-        ifstream region_file("region.txt");
-        vector<float> coords = getNextLineAndSplitIntoFloats(region_file);
+    //     //Read region
+    //     ifstream region_file("region.txt");
+    //     vector<float> coords = getNextLineAndSplitIntoFloats(region_file);
 
-        if (coords.size() == 4) {
-            rect = Rect(coords[0], coords[1], coords[2], coords[3]);
-        }
+    //     if (coords.size() == 4) {
+    //         rect = Rect(coords[0], coords[1], coords[2], coords[3]);
+    //     }
 
-        else if (coords.size() == 8)
-        {
-            //Split into x and y coordinates
-            vector<float> xcoords;
-            vector<float> ycoords;
+    //     else if (coords.size() == 8)
+    //     {
+    //         //Split into x and y coordinates
+    //         vector<float> xcoords;
+    //         vector<float> ycoords;
 
-            for (size_t i = 0; i < coords.size(); i++)
-            {
-                if (i % 2 == 0) xcoords.push_back(coords[i]);
-                else ycoords.push_back(coords[i]);
-            }
+    //         for (size_t i = 0; i < coords.size(); i++)
+    //         {
+    //             if (i % 2 == 0) xcoords.push_back(coords[i]);
+    //             else ycoords.push_back(coords[i]);
+    //         }
 
-            float xmin = *min_element(xcoords.begin(), xcoords.end());
-            float xmax = *max_element(xcoords.begin(), xcoords.end());
-            float ymin = *min_element(ycoords.begin(), ycoords.end());
-            float ymax = *max_element(ycoords.begin(), ycoords.end());
+    //         float xmin = *min_element(xcoords.begin(), xcoords.end());
+    //         float xmax = *max_element(xcoords.begin(), xcoords.end());
+    //         float ymin = *min_element(ycoords.begin(), ycoords.end());
+    //         float ymax = *max_element(ycoords.begin(), ycoords.end());
 
-            rect = Rect(xmin, ymin, xmax-xmin, ymax-ymin);
-            cout << "Found bounding box" << xmin << " " << ymin << " " <<  xmax-xmin << " " << ymax-ymin << endl;
-        }
+    //         rect = Rect(xmin, ymin, xmax-xmin, ymax-ymin);
+    //         cout << "Found bounding box" << xmin << " " << ymin << " " <<  xmax-xmin << " " << ymax-ymin << endl;
+    //     }
 
-        else {
-            cerr << "Invalid Bounding box format" << endl;
-            return 0;
-        }
+    //     else {
+    //         cerr << "Invalid Bounding box format" << endl;
+    //         return 0;
+    //     }
 
-        //Read first image
-        Mat im0 = imread(files[0]);
-        Mat im0_gray;
-        cvtColor(im0, im0_gray, CV_BGR2GRAY);
+    //     //Read first image
+    //     Mat im0 = imread(files[0]);
+    //     Mat im0_gray;
+    //     cvtColor(im0, im0_gray, CV_BGR2GRAY);
 
-        //Initialize cmt
-        cmt.initialize(im0_gray, rect);
+    //     //Initialize cmt
+    //     cmt.initialize(im0_gray, rect);
 
-        //Write init region to output file
-        ofstream output_file("output.txt");
-        output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
+    //     //Write init region to output file
+    //     ofstream output_file("output.txt");
+    //     output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
 
-        //Process images, write output to file
-        for (size_t i = 1; i < files.size(); i++)
-        {
-            FILE_LOG(logINFO) << "Processing frame " << i << "/" << files.size();
-            Mat im = imread(files[i]);
-            Mat im_gray;
-            cvtColor(im, im_gray, CV_BGR2GRAY);
-            cmt.processFrame(im_gray);
-            if (verbose_flag)
-            {
-                display(im, cmt);
-            }
-            rect = cmt.bb_rot.boundingRect();
-            output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
-        }
+    //     //Process images, write output to file
+    //     for (size_t i = 1; i < files.size(); i++)
+    //     {
+    //         FILE_LOG(logINFO) << "Processing frame " << i << "/" << files.size();
+    //         Mat im = imread(files[i]);
+    //         Mat im_gray;
+    //         cvtColor(im, im_gray, CV_BGR2GRAY);
+    //         cmt.processFrame(im_gray);
+    //         if (verbose_flag)
+    //         {
+    //             display(im, cmt);
+    //         }
+    //         rect = cmt.bb_rot.boundingRect();
+    //         output_file << rect.x << ',' << rect.y << ',' << rect.width << ',' << rect.height << std::endl;
+    //     }
 
-        output_file.close();
+    //     output_file.close();
 
-        return 0;
-    }
+    //     return 0;
+    // }
 
     //Normal mode
 
     //Create window
     namedWindow(WIN_NAME);
 
-    VideoCapture cap("/dev/video1");
+    VideoCapture cap;
     // cap.set(CV_CAP_PROP_FRAME_WIDTH,800);
     // cap.set(CV_CAP_PROP_FRAME_HEIGHT,600);
     bool show_preview = true;
@@ -385,7 +385,7 @@ int main(int argc, char **argv)
     // {
     //     rect = getRect(im0, WIN_NAME);
     // }
-    rect = Rect(282,160,103,117);
+    rect = Rect(289,166,90,104);
     FILE_LOG(logINFO) << "Using " << rect.x << "," << rect.y << "," << rect.width << "," << rect.height
         << " as initial bounding box.";
 
