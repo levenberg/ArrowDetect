@@ -316,8 +316,9 @@ int main(int argc, char **argv)
     //Create window
     namedWindow(WIN_NAME);
 
-    VideoCapture cap;
-
+    VideoCapture cap("/dev/video1");
+    // cap.set(CV_CAP_PROP_FRAME_WIDTH,800);
+    // cap.set(CV_CAP_PROP_FRAME_HEIGHT,600);
     bool show_preview = true;
 
     //If no input was specified
@@ -355,38 +356,46 @@ int main(int argc, char **argv)
     }
 
     //Show preview until key is pressed
-    while (show_preview)
-    {
-        Mat preview;
-        cap >> preview;
+    // while (show_preview)
+    // {
+    //     Mat preview;
+    //     cap >> preview;
 
-        screenLog(preview, "Press a key to start selecting an object.");
-        imshow(WIN_NAME, preview);
+    //     cout<<preview.rows<<preview.cols<<endl;
+        
+    //     screenLog(preview, "Press a key to start selecting an object.");
+    //     imshow(WIN_NAME, preview);
 
-        char k = waitKey(10);
-        if (k != -1) {
-            show_preview = false;
-        }
-    }
+    //     char k = waitKey(10);
+    //     if (k != -1) {
+    //         show_preview = false;
+    //     }
+    // }
 
     //Get initial image
-    Mat im0;
-    cap >> im0;
+    Mat im0, im0_src;
 
+    //cap >> im0;
+    
+    im0_src = imread("arrow/arrow1.jpg");
+    resize(im0_src, im0, cv::Size(640, 480), 0, 0, 3);
+    
     //If no bounding was specified, get it from user
-    if (!bbox_flag)
-    {
-        rect = getRect(im0, WIN_NAME);
-    }
-
+    // if (!bbox_flag)
+    // {
+    //     rect = getRect(im0, WIN_NAME);
+    // }
+    rect = Rect(282,160,103,117);
     FILE_LOG(logINFO) << "Using " << rect.x << "," << rect.y << "," << rect.width << "," << rect.height
         << " as initial bounding box.";
 
     //Convert im0 to grayscale
     Mat im0_gray;
-    if (im0.channels() > 1) {
+    if (im0.channels() > 1) 
+    {
         cvtColor(im0, im0_gray, CV_BGR2GRAY);
-    } else {
+    } 
+    else {
         im0_gray = im0;
     }
 
@@ -418,7 +427,13 @@ int main(int argc, char **argv)
 
         //If loop flag is set, reuse initial image (for debugging purposes)
         if (loop_flag) im0.copyTo(im);
-        else cap >> im; //Else use next image in stream
+        else 
+        {
+            cap >> im; //Else use next image in stream
+            //resize(im_src, im, cv::Size(800, 600), 0, 0, 3);
+        }
+
+        
 
         if (im.empty()) break; //Exit at end of video stream
 

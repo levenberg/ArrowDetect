@@ -91,7 +91,8 @@ Rect getRect(const Mat im, const string win_name)
     setMouseCallback(win_name, NULL);
 
     im_select.release(); //im_select is in global scope, so we call release manually
-
+    
+    //return Rect(300,200,40,80);
     return Rect(tl,br);
 }
 
