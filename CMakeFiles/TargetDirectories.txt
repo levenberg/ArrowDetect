@@ -1,1 +1,0 @@
-/home/ubuntu/Documents/ICRA/ArrowDetect/CMakeFiles/cmt.dir
